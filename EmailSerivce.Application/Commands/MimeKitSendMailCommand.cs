@@ -14,6 +14,7 @@ public class MimeKitSendMailCommand : ISendEmailService
 {
     private readonly ILogger<MimeKitSendMailCommand> _logger;
     private readonly SmtpClient _smtpClient = new();
+    private readonly MimeKitSendMailValidation _mimeKitSendMailValidation = new();
 
     public MimeKitSendMailCommand(ILogger<MimeKitSendMailCommand> logger)
     {
@@ -24,6 +25,12 @@ public class MimeKitSendMailCommand : ISendEmailService
     {
         try
         {
+            bool isModelCorrect = _mimeKitSendMailValidation.CheckMail(mail);
+            if (!isModelCorrect)
+            {
+                return;
+            }
+
             var mimeMessage = CreateMimeMessage(mail);
             SendMimeKit(mimeMessage, mail);
         }
