@@ -1,4 +1,5 @@
-﻿using EmailSerivce.Application.Commands;
+﻿using AutoMapper;
+using EmailSerivce.Application.Commands;
 using EmailSerivce.Domain;
 using EmailService.Api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,13 @@ public class EmailController : BaseController
 {
     private readonly ILogger<EmailController> _logger;
     private readonly ISendEmailService _sendEmailService;
+    private readonly IMapper _mapper;
     public EmailController(ISendEmailService sendEmailService,
-        ILogger<EmailController> logger)
+        ILogger<EmailController> logger, IMapper mapper)
     {
         _sendEmailService = sendEmailService;
         _logger = logger;
+        _mapper = mapper;
     }
 
     [HttpPost]
@@ -24,10 +27,8 @@ public class EmailController : BaseController
     {
         _logger.LogInformation("Input model: " + postDto.Value);
         MailDto mailDto = DeserializeObject(postDto);
-        
-        Mail mail = new() { Body = mailDto.Body,
-        FromAddress = mailDto.FromAddress, FromName = mailDto.FromName,
-        Subject = mailDto.Subject, ToAddress = mailDto.ToAddress, ToName = mailDto.ToName };
+
+        Mail mail = _mapper.Map<Mail>(mailDto);
 
         _sendEmailService.Send(mail);
 
