@@ -29,6 +29,8 @@ public class MimeKitSendMailCommand : ISendEmailService
             bool isModelCorrect = _mimeKitSendMailValidation.CheckMail(mail);
             if (!isModelCorrect)
             {
+                _logger.LogError("Model is uncorrent!");
+
                 return;
             }
 
