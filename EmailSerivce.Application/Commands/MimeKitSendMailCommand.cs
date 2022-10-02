@@ -5,15 +5,16 @@ using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace EmailSerivce.Application.Commands;
 
 public class MimeKitSendMailCommand : ISendEmailService
 {
     private readonly ILogger<MimeKitSendMailCommand> _logger;
-    private readonly SmtpClient _smtpClient = new();
     private readonly MimeKitSendMailValidation _mimeKitSendMailValidation = new();
 
     public MimeKitSendMailCommand(ILogger<MimeKitSendMailCommand> logger)
@@ -47,10 +48,13 @@ public class MimeKitSendMailCommand : ISendEmailService
 
     private void SendMimeKit(MimeMessage mimeMessage, Mail mail)
     {
-        _smtpClient.Connect("smtp.mail.ru", 465, true);
-        _smtpClient.Authenticate("vasily_pavlov_98@mail.ru", "3qDNyUS4WAR4SQBSqDJH");
-        _smtpClient.Send(mimeMessage);
-        _smtpClient.Disconnect(true);
+        using (var smtpClient = new SmtpClient())
+        {
+            smtpClient.Connect("smtp.mail.ru", 465, true);
+            smtpClient.Authenticate("vasily_pavlov_98@mail.ru", "3qDNyUS4WAR4SQBSqDJH");
+            smtpClient.Send(mimeMessage);
+            smtpClient.Disconnect(true);
+        }
 
         _logger.LogInformation("Сообщение отправлено: " + mail.ToString());
     }
