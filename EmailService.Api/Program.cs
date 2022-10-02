@@ -1,8 +1,10 @@
 using EmailSerivce.Application.Commands;
 using EmailSerivce.Application.Common.Mappings;
+using System.Net;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseKestrel();
 
 //Add services to the container.
 builder.Services.AddControllersWithViews();
