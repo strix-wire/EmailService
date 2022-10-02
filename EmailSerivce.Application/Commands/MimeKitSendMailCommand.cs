@@ -16,7 +16,7 @@ public class MimeKitSendMailCommand : ISendEmailService
 {
     private readonly ILogger<MimeKitSendMailCommand> _logger;
     private readonly MimeKitSendMailValidation _mimeKitSendMailValidation = new();
-
+    private static string _senderMail = (string)Properties.Settings.Default["senderMail"];
     public MimeKitSendMailCommand(ILogger<MimeKitSendMailCommand> logger)
     {
         _logger = logger;
@@ -51,7 +51,7 @@ public class MimeKitSendMailCommand : ISendEmailService
         using (var smtpClient = new SmtpClient())
         {
             smtpClient.Connect("smtp.mail.ru", 465, true);
-            smtpClient.Authenticate("vasily_pavlov_98@mail.ru", "3qDNyUS4WAR4SQBSqDJH");
+            smtpClient.Authenticate(_senderMail, "3qDNyUS4WAR4SQBSqDJH");
             smtpClient.Send(mimeMessage);
             smtpClient.Disconnect(true);
         }
@@ -62,13 +62,13 @@ public class MimeKitSendMailCommand : ISendEmailService
     private MimeMessage CreateMimeMessage(Mail mail)
     {
         MimeMessage mimeMessage = new();
-        mimeMessage.From.Add(new MailboxAddress(mail.FromName, mail.FromAddress));
+        mimeMessage.From.Add(new MailboxAddress(mail.FromName, _senderMail));
         mimeMessage.To.Add(new MailboxAddress(mail.ToName, mail.ToAddress));
         mimeMessage.Subject = mail.Subject;
 
         var bodyBuilder = new BodyBuilder
         {
-            HtmlBody = "<div style=\"color: red;\">" + mail.Body + "</div>"
+            HtmlBody = "<div style=\"color: red;\">" + "Message from mail: " + mail.FromAddress + "\n" + mail.Body + "</div>"
         };
         mimeMessage.Body = bodyBuilder.ToMessageBody();
 

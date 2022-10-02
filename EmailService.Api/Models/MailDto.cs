@@ -19,10 +19,10 @@ public class MailDto : IMapWith<Mail>
                 opt => opt.MapFrom(mail => mail.FromName))
             .ForMember(mailDto => mailDto.FromAddress,
                 opt => opt.MapFrom(mail => mail.FromAddress))
+            .ForMember(mailDto => mailDto.ToName,
+                opt => opt.MapFrom(mail => mail.ToName))
             .ForMember(mailDto => mailDto.ToAddress,
                 opt => opt.MapFrom(mail => mail.ToAddress))
-            .ForMember(mailDto => mailDto.FromAddress,
-                opt => opt.MapFrom(mail => mail.FromAddress))
             .ForMember(mailDto => mailDto.Subject,
                 opt => opt.MapFrom(mail => mail.Subject))
             .ForMember(mailDto => mailDto.Body,
