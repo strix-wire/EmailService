@@ -23,12 +23,11 @@ public class EmailController : BaseController
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] PostDto postDto)
+    public ActionResult Post([FromBody] MailDto dto)
     {
-        _logger.LogInformation("Input model: " + postDto.Value);
-        MailDto mailDto = DeserializeObject(postDto);
+        _logger.LogInformation("Input model: " + dto);
 
-        Mail mail = _mapper.Map<Mail>(mailDto);
+        Mail mail = _mapper.Map<Mail>(dto);
 
         _sendEmailService.Send(mail);
 
